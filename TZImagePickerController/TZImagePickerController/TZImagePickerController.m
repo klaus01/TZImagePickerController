@@ -17,6 +17,7 @@
 
 @interface TZImagePickerController () {
     NSTimer *_timer;
+    UIButton *_closeButton;
     UILabel *_tipLabel;
     UIButton *_settingBtn;
     BOOL _pushPhotoPickerVc;
@@ -58,6 +59,8 @@
     // 默认的外观，你可以在这个方法后重置
     self.oKButtonTitleColorNormal   = [UIColor colorWithRed:(83/255.0) green:(179/255.0) blue:(17/255.0) alpha:1.0];
     self.oKButtonTitleColorDisabled = [UIColor colorWithRed:(83/255.0) green:(179/255.0) blue:(17/255.0) alpha:0.5];
+    self.previewOKButtonTitleColorNormal = self.oKButtonTitleColorNormal;
+    self.previewOKButtonTitleColorDisabled = self.oKButtonTitleColorDisabled;
     
     self.navigationBar.barTintColor = [UIColor colorWithRed:(34/255.0) green:(34/255.0)  blue:(34/255.0) alpha:1.0];
     self.navigationBar.tintColor = [UIColor whiteColor];
@@ -155,6 +158,7 @@
     albumPickerVc.columnNumber = columnNumber;
     self = [super initWithRootViewController:albumPickerVc];
     if (self) {
+        self.navigationBar.hidden = YES;
         self.maxImagesCount = maxImagesCount > 0 ? maxImagesCount : 9; // Default is 9 / 默认最大可选9张图片
         self.pickerDelegate = delegate;
         self.selectedAssets = [NSMutableArray array];
@@ -173,8 +177,18 @@
         [self configDefaultSetting];
         
         if (![[TZImageManager manager] authorizationStatusAuthorized]) {
+            
+            _closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
+            _closeButton.tintColor = [UIColor colorWithWhite:0x18 / 255.0 alpha:1.0];
+            _closeButton.contentEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 12);
+            [_closeButton setImage:[UIImage imageNamedFromMyBundle:@"sl_close"] forState:UIControlStateNormal];
+            [_closeButton addTarget:self action:@selector(cancelButtonClick) forControlEvents:UIControlEventTouchUpInside];
+            [_closeButton sizeToFit];
+            _closeButton.frame = CGRectMake([TZCommonTools tz_viewLeftMargin], [TZCommonTools tz_isIPhoneX] ? 44 : 10, _closeButton.frame.size.width, 40);
+            [self.view addSubview:_closeButton];
+            
             _tipLabel = [[UILabel alloc] init];
-            _tipLabel.frame = CGRectMake(8, 120, self.view.tz_width - 16, 60);
+            _tipLabel.frame = CGRectMake(8, 150, self.view.tz_width - 16, 60);
             _tipLabel.textAlignment = NSTextAlignmentCenter;
             _tipLabel.numberOfLines = 0;
             _tipLabel.font = [UIFont systemFontOfSize:16];
@@ -189,7 +203,7 @@
             
             _settingBtn = [UIButton buttonWithType:UIButtonTypeSystem];
             [_settingBtn setTitle:self.settingBtnTitleStr forState:UIControlStateNormal];
-            _settingBtn.frame = CGRectMake(0, 180, self.view.tz_width, 44);
+            _settingBtn.frame = CGRectMake(0, 210, self.view.tz_width, 44);
             _settingBtn.titleLabel.font = [UIFont systemFontOfSize:18];
             [_settingBtn addTarget:self action:@selector(settingBtnClick) forControlEvents:UIControlEventTouchUpInside];
             [self.view addSubview:_settingBtn];
@@ -369,6 +383,7 @@
     }
     
     if ([[TZImageManager manager] authorizationStatusAuthorized]) {
+        [_closeButton removeFromSuperview];
         [_tipLabel removeFromSuperview];
         [_settingBtn removeFromSuperview];
 
@@ -876,6 +891,25 @@
         }
     }
     return NO;
+}
+
++ (CGFloat)tz_viewLeftMargin {
+    return 60;
+}
+
++ (void)tz_buttonImageToRight:(UIButton *)button {
+    if (button.imageView == nil || button.titleLabel == nil) return;
+    
+    button.titleEdgeInsets = UIEdgeInsetsZero;
+    button.imageEdgeInsets = UIEdgeInsetsZero;
+    button.contentEdgeInsets = UIEdgeInsetsZero;
+    [button sizeToFit];
+    [button.titleLabel sizeToFit];
+    [button.imageView sizeToFit];
+    CGFloat titleLeftRightInset = -button.imageView.frame.size.width;
+    button.titleEdgeInsets = UIEdgeInsetsMake(0, titleLeftRightInset, 0, -titleLeftRightInset);
+    CGFloat imageLeftRightInset = button.titleLabel.frame.size.width;
+    button.imageEdgeInsets = UIEdgeInsetsMake(0, imageLeftRightInset, 0, -imageLeftRightInset);
 }
 
 @end

@@ -76,7 +76,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
+//    [self.navigationController setNavigationBarHidden:YES animated:YES];
     [UIApplication sharedApplication].statusBarHidden = YES;
     if (_currentIndex) {
         [_collectionView setContentOffset:CGPointMake((self.view.tz_width + 20) * self.currentIndex, 0) animated:NO];
@@ -86,7 +86,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
+//    [self.navigationController setNavigationBarHidden:NO animated:YES];
     TZImagePickerController *tzImagePickerVc = (TZImagePickerController *)self.navigationController;
     if (tzImagePickerVc.needShowStatusBar) {
         [UIApplication sharedApplication].statusBarHidden = NO;
@@ -160,7 +160,8 @@
     _doneButton.titleLabel.font = [UIFont systemFontOfSize:16];
     [_doneButton addTarget:self action:@selector(doneButtonClick) forControlEvents:UIControlEventTouchUpInside];
     [_doneButton setTitle:_tzImagePickerVc.doneBtnTitleStr forState:UIControlStateNormal];
-    [_doneButton setTitleColor:_tzImagePickerVc.oKButtonTitleColorNormal forState:UIControlStateNormal];
+    [_doneButton setTitleColor:_tzImagePickerVc.previewOKButtonTitleColorNormal forState:UIControlStateNormal];
+    [_doneButton setTitleColor:_tzImagePickerVc.previewOKButtonTitleColorDisabled forState:UIControlStateDisabled];
     
     _numberImageView = [[UIImageView alloc] initWithImage:_tzImagePickerVc.photoNumberIconImage];
     _numberImageView.backgroundColor = [UIColor clearColor];
@@ -249,7 +250,7 @@
     CGFloat statusBarHeightInterval = statusBarHeight - 20;
     CGFloat naviBarHeight = statusBarHeight + _tzImagePickerVc.navigationBar.tz_height;
     _naviBar.frame = CGRectMake(0, 0, self.view.tz_width, naviBarHeight);
-    _backButton.frame = CGRectMake(10, 10 + statusBarHeightInterval, 44, 44);
+    _backButton.frame = CGRectMake([TZCommonTools tz_viewLeftMargin] - 16, 10 + statusBarHeightInterval, 44, 44);
     _selectButton.frame = CGRectMake(self.view.tz_width - 56, 10 + statusBarHeightInterval, 44, 44);
     _indexLabel.frame = _selectButton.frame;
     
@@ -271,8 +272,8 @@
     _toolBar.frame = CGRectMake(0, toolBarTop, self.view.tz_width, toolBarHeight);
     if (_tzImagePickerVc.allowPickingOriginalPhoto) {
         CGFloat fullImageWidth = [_tzImagePickerVc.fullImageBtnTitleStr boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX) options:NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13]} context:nil].size.width;
-        _originalPhotoButton.frame = CGRectMake(0, 0, fullImageWidth + 56, 44);
-        _originalPhotoLabel.frame = CGRectMake(fullImageWidth + 42, 0, 80, 44);
+        _originalPhotoButton.frame = CGRectMake([TZCommonTools tz_viewLeftMargin], 0, fullImageWidth + 56, 44);
+        _originalPhotoLabel.frame = CGRectMake([TZCommonTools tz_viewLeftMargin] + fullImageWidth + 42, 0, 80, 44);
     }
     [_doneButton sizeToFit];
     _doneButton.frame = CGRectMake(self.view.tz_width - _doneButton.tz_width - 12, 0, _doneButton.tz_width, 44);

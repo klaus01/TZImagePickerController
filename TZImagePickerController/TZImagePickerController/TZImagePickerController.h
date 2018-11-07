@@ -210,6 +210,8 @@
 /// Appearance / 外观颜色 + 按钮文字
 @property (nonatomic, strong) UIColor *oKButtonTitleColorNormal;
 @property (nonatomic, strong) UIColor *oKButtonTitleColorDisabled;
+@property (nonatomic, strong) UIColor *previewOKButtonTitleColorNormal;
+@property (nonatomic, strong) UIColor *previewOKButtonTitleColorDisabled;
 @property (nonatomic, strong) UIColor *naviBgColor;
 @property (nonatomic, strong) UIColor *naviTitleColor;
 @property (nonatomic, strong) UIFont *naviTitleFont;
@@ -310,6 +312,8 @@
 // 获得Info.plist数据字典
 + (NSDictionary *)tz_getInfoDictionary;
 + (BOOL)isRightToLeftLayout;
++ (CGFloat)tz_viewLeftMargin;
++ (void)tz_buttonImageToRight:(UIButton *)button;
 @end
 
 

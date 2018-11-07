@@ -17,7 +17,7 @@
 #import "TZPhotoPreviewController.h"
 #import "TZGifPhotoPreviewController.h"
 #import "TZLocationManager.h"
-#import "TZAssetCell.h"
+//#import "TZAssetCell.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "FLAnimatedImage.h"
 
