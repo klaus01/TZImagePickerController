@@ -68,11 +68,11 @@
 
 /// Get full Image 获取原图
 /// 如下两个方法completion一般会调多次，一般会先返回缩略图，再返回原图(详见方法内部使用的系统API的说明)，如果info[PHImageResultIsDegradedKey] 为 YES，则表明当前返回的是缩略图，否则是原图。
-- (void)getOriginalPhotoWithAsset:(PHAsset *)asset completion:(void (^)(UIImage *photo,NSDictionary *info))completion;
-- (void)getOriginalPhotoWithAsset:(PHAsset *)asset newCompletion:(void (^)(UIImage *photo,NSDictionary *info,BOOL isDegraded))completion;
+- (void)getOriginalPhotoWithAsset:(PHAsset *)asset completion:(void (^)(PHAsset *asset, UIImage *photo,NSDictionary *info))completion;
+- (void)getOriginalPhotoWithAsset:(PHAsset *)asset newCompletion:(void (^)(PHAsset *asset, UIImage *photo,NSDictionary *info,BOOL isDegraded))completion;
 // 该方法中，completion只会走一次
-- (void)getOriginalPhotoDataWithAsset:(PHAsset *)asset completion:(void (^)(NSData *data,NSDictionary *info,BOOL isDegraded))completion;
-- (void)getOriginalPhotoDataWithAsset:(PHAsset *)asset progressHandler:(void (^)(double progress, NSError *error, BOOL *stop, NSDictionary *info))progressHandler completion:(void (^)(NSData *data,NSDictionary *info,BOOL isDegraded))completion;
+- (void)getOriginalPhotoDataWithAsset:(PHAsset *)asset completion:(void (^)(PHAsset *asset, NSData *data,NSDictionary *info,BOOL isDegraded))completion;
+- (void)getOriginalPhotoDataWithAsset:(PHAsset *)asset progressHandler:(void (^)(double progress, NSError *error, BOOL *stop, NSDictionary *info))progressHandler completion:(void (^)(PHAsset *asset, NSData *data,NSDictionary *info,BOOL isDegraded))completion;
 
 /// Save photo 保存照片
 - (void)savePhotoWithImage:(UIImage *)image completion:(void (^)(PHAsset *asset, NSError *error))completion;

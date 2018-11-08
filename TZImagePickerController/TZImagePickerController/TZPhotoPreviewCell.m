@@ -174,7 +174,7 @@
 #ifdef DEBUG
                 NSLog(@"[TZImagePickerController] getOriginalPhotoDataWithAsset:%f error:%@", progress, error);
 #endif
-            } completion:^(NSData *data, NSDictionary *info, BOOL isDegraded) {
+            } completion:^(PHAsset *asset, NSData *data, NSDictionary *info, BOOL isDegraded) {
                 if (!isDegraded) {
                     self.isRequestingGIF = NO;
                     self.progressView.hidden = YES;

@@ -412,15 +412,15 @@ static dispatch_once_t onceToken;
 }
 
 /// Get Original Photo / 获取原图
-- (void)getOriginalPhotoWithAsset:(PHAsset *)asset completion:(void (^)(UIImage *photo,NSDictionary *info))completion {
-    [self getOriginalPhotoWithAsset:asset newCompletion:^(UIImage *photo, NSDictionary *info, BOOL isDegraded) {
+- (void)getOriginalPhotoWithAsset:(PHAsset *)asset completion:(void (^)(PHAsset *asset, UIImage *photo,NSDictionary *info))completion {
+    [self getOriginalPhotoWithAsset:asset newCompletion:^(PHAsset *asset, UIImage *photo, NSDictionary *info, BOOL isDegraded) {
         if (completion) {
-            completion(photo,info);
+            completion(asset,photo,info);
         }
     }];
 }
 
-- (void)getOriginalPhotoWithAsset:(PHAsset *)asset newCompletion:(void (^)(UIImage *photo,NSDictionary *info,BOOL isDegraded))completion {
+- (void)getOriginalPhotoWithAsset:(PHAsset *)asset newCompletion:(void (^)(PHAsset *asset, UIImage *photo,NSDictionary *info,BOOL isDegraded))completion {
     PHImageRequestOptions *option = [[PHImageRequestOptions alloc]init];
     option.networkAccessAllowed = YES;
     option.resizeMode = PHImageRequestOptionsResizeModeFast;
@@ -429,16 +429,16 @@ static dispatch_once_t onceToken;
         if (downloadFinined && result) {
             result = [self fixOrientation:result];
             BOOL isDegraded = [[info objectForKey:PHImageResultIsDegradedKey] boolValue];
-            if (completion) completion(result,info,isDegraded);
+            if (completion) completion(asset,result,info,isDegraded);
         }
     }];
 }
 
-- (void)getOriginalPhotoDataWithAsset:(PHAsset *)asset completion:(void (^)(NSData *data,NSDictionary *info,BOOL isDegraded))completion {
+- (void)getOriginalPhotoDataWithAsset:(PHAsset *)asset completion:(void (^)(PHAsset *asset, NSData *data,NSDictionary *info,BOOL isDegraded))completion {
     [self getOriginalPhotoDataWithAsset:asset progressHandler:nil completion:completion];
 }
 
-- (void)getOriginalPhotoDataWithAsset:(PHAsset *)asset progressHandler:(void (^)(double progress, NSError *error, BOOL *stop, NSDictionary *info))progressHandler completion:(void (^)(NSData *data,NSDictionary *info,BOOL isDegraded))completion {
+- (void)getOriginalPhotoDataWithAsset:(PHAsset *)asset progressHandler:(void (^)(double progress, NSError *error, BOOL *stop, NSDictionary *info))progressHandler completion:(void (^)(PHAsset *asset, NSData *data,NSDictionary *info,BOOL isDegraded))completion {
     PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
     option.networkAccessAllowed = YES;
     if ([[asset valueForKey:@"filename"] hasSuffix:@"GIF"]) {
@@ -450,7 +450,7 @@ static dispatch_once_t onceToken;
     [[PHImageManager defaultManager] requestImageDataForAsset:asset options:option resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
         BOOL downloadFinined = (![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey]);
         if (downloadFinined && imageData) {
-            if (completion) completion(imageData,info,NO);
+            if (completion) completion(asset,imageData,info,NO);
         }
     }];
 }
