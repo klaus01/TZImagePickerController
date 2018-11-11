@@ -806,8 +806,13 @@ static CGFloat itemMargin = 10;
 
 // 调用相机
 - (void)pushImagePickerController {
-    // 提前定位
     TZImagePickerController *tzImagePickerVc = (TZImagePickerController *)self.navigationController;
+    if (tzImagePickerVc.takePhotoHandle) {
+        tzImagePickerVc.takePhotoHandle();
+        return;
+    }
+    
+    // 提前定位
     if (tzImagePickerVc.allowCameraLocation) {
         __weak typeof(self) weakSelf = self;
         [[TZLocationManager manager] startLocationWithSuccessBlock:^(NSArray<CLLocation *> *locations) {

@@ -232,6 +232,9 @@
 #pragma mark -
 - (void)cancelButtonClick;
 
+/// 自定义 拍照 按钮的实现
+@property (nonatomic, copy) void (^takePhotoHandle)(void);
+
 // The picker should dismiss itself; when it dismissed these handle will be called.
 // You can also set autoDismiss to NO, then the picker don't dismiss itself.
 // If isOriginalPhoto is YES, user picked the original photo.
