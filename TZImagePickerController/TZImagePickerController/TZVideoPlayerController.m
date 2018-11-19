@@ -20,13 +20,16 @@
     UIButton *_playButton;
     UIImage *_cover;
     
+    UIView *_naviBar;
+    UIButton *_backButton;
+    
     UIView *_toolBar;
     UIButton *_doneButton;
     UIProgressView *_progress;
     
-    UIStatusBarStyle _originStatusBarStyle;
+//    UIStatusBarStyle _originStatusBarStyle;
 }
-@property (assign, nonatomic) BOOL needShowStatusBar;
+//@property (assign, nonatomic) BOOL needShowStatusBar;
 @end
 
 #pragma clang diagnostic push
@@ -36,7 +39,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.needShowStatusBar = ![UIApplication sharedApplication].statusBarHidden;
+//    self.needShowStatusBar = ![UIApplication sharedApplication].statusBarHidden;
     self.view.backgroundColor = [UIColor blackColor];
     TZImagePickerController *tzImagePickerVc = (TZImagePickerController *)self.navigationController;
     if (tzImagePickerVc) {
@@ -48,13 +51,13 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    _originStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
+//    _originStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
+//    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [UIApplication sharedApplication].statusBarStyle = _originStatusBarStyle;
+//    [UIApplication sharedApplication].statusBarStyle = _originStatusBarStyle;
 }
 
 - (void)configMoviePlayer {
@@ -72,6 +75,7 @@
             [self.view.layer addSublayer:self->_playerLayer];
             [self addProgressObserver];
             [self configPlayButton];
+            [self configCustomNaviBar];
             [self configBottomToolBar];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pausePlayerAndShowNaviBar) name:AVPlayerItemDidPlayToEndTimeNotification object:self->_player.currentItem];
         });
@@ -99,6 +103,19 @@
     [self.view addSubview:_playButton];
 }
 
+- (void)configCustomNaviBar {
+    _naviBar = [[UIView alloc] initWithFrame:CGRectZero];
+    _naviBar.backgroundColor = [UIColor colorWithRed:(34/255.0) green:(34/255.0)  blue:(34/255.0) alpha:0.7];
+    
+    _backButton = [[UIButton alloc] initWithFrame:CGRectZero];
+    [_backButton setImage:[UIImage imageNamedFromMyBundle:@"navi_back"] forState:UIControlStateNormal];
+    [_backButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [_backButton addTarget:self action:@selector(backButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    
+    [_naviBar addSubview:_backButton];
+    [self.view addSubview:_naviBar];
+}
+
 - (void)configBottomToolBar {
     _toolBar = [[UIView alloc] initWithFrame:CGRectZero];
     CGFloat rgb = 34 / 255.0;
@@ -113,7 +130,7 @@
     TZImagePickerController *tzImagePickerVc = (TZImagePickerController *)self.navigationController;
     if (tzImagePickerVc) {
         [_doneButton setTitle:tzImagePickerVc.doneBtnTitleStr forState:UIControlStateNormal];
-        [_doneButton setTitleColor:tzImagePickerVc.oKButtonTitleColorNormal forState:UIControlStateNormal];
+        [_doneButton setTitleColor:tzImagePickerVc.previewOKButtonTitleColorNormal forState:UIControlStateNormal];
     } else {
         [_doneButton setTitle:[NSBundle tz_localizedStringForKey:@"Done"] forState:UIControlStateNormal];
         [_doneButton setTitleColor:[UIColor colorWithRed:(83/255.0) green:(179/255.0) blue:(17/255.0) alpha:1.0] forState:UIControlStateNormal];
@@ -139,16 +156,22 @@
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
+    TZImagePickerController *tzImagePickerVc = (TZImagePickerController *)self.navigationController;
     
     CGFloat statusBarHeight = [TZCommonTools tz_statusBarHeight];
     CGFloat statusBarAndNaviBarHeight = statusBarHeight + self.navigationController.navigationBar.tz_height;
+    
+    CGFloat statusBarHeightInterval = statusBarHeight - 20;
+    CGFloat naviBarHeight = statusBarHeight + tzImagePickerVc.navigationBar.tz_height;
+    _naviBar.frame = CGRectMake(0, 0, self.view.tz_width, naviBarHeight);
+    _backButton.frame = CGRectMake([TZCommonTools tz_viewLeftMargin] - 16, 10 + statusBarHeightInterval, 44, 44);
+    
     _playerLayer.frame = self.view.bounds;
     CGFloat toolBarHeight = [TZCommonTools tz_isIPhoneX] ? 44 + (83 - 49) : 44;
     _toolBar.frame = CGRectMake(0, self.view.tz_height - toolBarHeight, self.view.tz_width, toolBarHeight);
     _doneButton.frame = CGRectMake(self.view.tz_width - 44 - 12, 0, 44, 44);
     _playButton.frame = CGRectMake(0, statusBarAndNaviBarHeight, self.view.tz_width, self.view.tz_height - statusBarAndNaviBarHeight - toolBarHeight);
     
-    TZImagePickerController *tzImagePickerVc = (TZImagePickerController *)self.navigationController;
     if (tzImagePickerVc.videoPreviewPageDidLayoutSubviewsBlock) {
         tzImagePickerVc.videoPreviewPageDidLayoutSubviewsBlock(_playButton, _toolBar, _doneButton);
     }
@@ -162,13 +185,18 @@
     if (_player.rate == 0.0f) {
         if (currentTime.value == durationTime.value) [_player.currentItem seekToTime:CMTimeMake(0, 1)];
         [_player play];
-        [self.navigationController setNavigationBarHidden:YES];
+//        [self.navigationController setNavigationBarHidden:YES];
+        _naviBar.hidden = YES;
         _toolBar.hidden = YES;
         [_playButton setImage:nil forState:UIControlStateNormal];
-        [UIApplication sharedApplication].statusBarHidden = YES;
+//        [UIApplication sharedApplication].statusBarHidden = YES;
     } else {
         [self pausePlayerAndShowNaviBar];
     }
+}
+
+- (void)backButtonClick {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)doneButtonClick {
@@ -202,13 +230,14 @@
 
 - (void)pausePlayerAndShowNaviBar {
     [_player pause];
+    _naviBar.hidden = NO;
     _toolBar.hidden = NO;
-    [self.navigationController setNavigationBarHidden:NO];
+//    [self.navigationController setNavigationBarHidden:NO];
     [_playButton setImage:[UIImage imageNamedFromMyBundle:@"MMVideoPreviewPlay"] forState:UIControlStateNormal];
     
-    if (self.needShowStatusBar) {
-        [UIApplication sharedApplication].statusBarHidden = NO;
-    }
+//    if (self.needShowStatusBar) {
+//        [UIApplication sharedApplication].statusBarHidden = NO;
+//    }
 }
 
 - (void)dealloc {
