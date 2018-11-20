@@ -441,8 +441,8 @@
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
         _imageView = [[UIImageView alloc] init];
-        _imageView.backgroundColor = [UIColor colorWithWhite:1.000 alpha:0.500];
-        _imageView.contentMode = UIViewContentModeScaleAspectFill;
+        _imageView.backgroundColor = [UIColor colorWithWhite:24.0/255.0 alpha:1];
+        _imageView.contentMode = UIViewContentModeCenter;
         [self.contentView addSubview:_imageView];
         self.clipsToBounds = YES;
     }
