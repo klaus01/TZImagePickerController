@@ -158,13 +158,10 @@
     [super viewDidLayoutSubviews];
     TZImagePickerController *tzImagePickerVc = (TZImagePickerController *)self.navigationController;
     
-    CGFloat statusBarHeight = [TZCommonTools tz_statusBarHeight];
-    CGFloat statusBarAndNaviBarHeight = statusBarHeight + self.navigationController.navigationBar.tz_height;
-    
-    CGFloat statusBarHeightInterval = statusBarHeight - 20;
-    CGFloat naviBarHeight = statusBarHeight + tzImagePickerVc.navigationBar.tz_height;
-    _naviBar.frame = CGRectMake(0, 0, self.view.tz_width, naviBarHeight);
-    _backButton.frame = CGRectMake([TZCommonTools tz_viewLeftMargin] - 16, 10 + statusBarHeightInterval, 44, 44);
+    CGFloat statusBarHeightInterval = 50;
+    CGFloat statusBarAndNaviBarHeight = statusBarHeightInterval + 44;
+    _naviBar.frame = CGRectMake(0, 0, self.view.tz_width, statusBarAndNaviBarHeight);
+    _backButton.frame = CGRectMake([TZCommonTools tz_viewLeftMargin] - 16, statusBarHeightInterval, 44, 44);
     
     _playerLayer.frame = self.view.bounds;
     CGFloat toolBarHeight = [TZCommonTools tz_isIPhoneX] ? 44 + (83 - 49) : 44;

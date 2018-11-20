@@ -187,7 +187,8 @@ static CGFloat itemMargin = 10;
     [_closeButton setImage:[UIImage imageNamedFromMyBundle:@"sl_close"] forState:UIControlStateNormal];
     [_closeButton addTarget:tzImagePickerVc action:@selector(cancelButtonClick) forControlEvents:UIControlEventTouchUpInside];
     [_closeButton sizeToFit];
-    _closeButton.frame = CGRectMake(0, 10, _closeButton.frame.size.width, 40);
+    CGFloat y = [TZCommonTools tz_isIPhoneX] ? 10 : 54;
+    _closeButton.frame = CGRectMake(0, y, _closeButton.frame.size.width, 40);
     [_headerView addSubview:_closeButton];
     
     _albumButton = [UIButton buttonWithType:UIButtonTypeCustom];

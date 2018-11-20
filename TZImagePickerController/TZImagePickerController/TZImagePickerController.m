@@ -184,7 +184,7 @@
             [_closeButton setImage:[UIImage imageNamedFromMyBundle:@"sl_close"] forState:UIControlStateNormal];
             [_closeButton addTarget:self action:@selector(cancelButtonClick) forControlEvents:UIControlEventTouchUpInside];
             [_closeButton sizeToFit];
-            _closeButton.frame = CGRectMake([TZCommonTools tz_viewLeftMargin], [TZCommonTools tz_isIPhoneX] ? 44 : 10, _closeButton.frame.size.width, 40);
+            _closeButton.frame = CGRectMake([TZCommonTools tz_viewLeftMargin], 54, _closeButton.frame.size.width, 40);
             [self.view addSubview:_closeButton];
             
             _tipLabel = [[UILabel alloc] init];
