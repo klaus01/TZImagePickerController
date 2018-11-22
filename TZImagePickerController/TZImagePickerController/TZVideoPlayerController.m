@@ -180,6 +180,10 @@
     CMTime currentTime = _player.currentItem.currentTime;
     CMTime durationTime = _player.currentItem.duration;
     if (_player.rate == 0.0f) {
+        if (AVAudioSession.sharedInstance.category != AVAudioSessionCategoryPlayback) {
+            [AVAudioSession.sharedInstance setCategory:AVAudioSessionCategoryPlayback error:nil];
+        }
+        
         if (currentTime.value == durationTime.value) [_player.currentItem seekToTime:CMTimeMake(0, 1)];
         [_player play];
 //        [self.navigationController setNavigationBarHidden:YES];
@@ -235,6 +239,9 @@
 //    if (self.needShowStatusBar) {
 //        [UIApplication sharedApplication].statusBarHidden = NO;
 //    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [AVAudioSession.sharedInstance setActive:NO withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:nil];
+    });
 }
 
 - (void)dealloc {
