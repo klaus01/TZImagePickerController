@@ -407,6 +407,8 @@
             photoPickerVc.model = model;
             [self pushViewController:photoPickerVc animated:YES];
             self->_didPushPhotoPickerVc = YES;
+            // SuperLine 在 TZPhotoPickerController 中选择相册，为避免手势返回到 TZAlbumPickerController，这里将 TZAlbumPickerController 移除
+            [self.viewControllers.firstObject removeFromParentViewController];
         }];
     }
 }
